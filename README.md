@@ -85,12 +85,60 @@ $ docker compose build web
 $ minikube start
 ```
 
-В файле secrets.yaml
+Создайте и настройте базу данных используя [Helm](https://helm.sh/)
+
+1 Скачайте его с [официального сайта](https://helm.sh/)
+
+2 Запустите команду для добавления Helm Chart Repository:
+
+```shell
+helm repo add bitnami https://charts.bitnami.com/bitnami
+```
+3 Отредактируйте файл db-value.yaml под себя 
+
+4 Установите PostgreSQL с помощью команды:
+
+```shell
+helm install postgres bitnami/postgresql -f minikube/db-value.yaml
+```
+
+
+Отредактируйте файл secrets.yaml
 Замените <base64_encoded_secret_key> и <base64_encoded_database_url> соответствующими значениями, закодированными в формате base64.
 Вы можете закодировать значения с помощью команды echo `-n 'ваше_значение' | base64` или `[Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("Ваше значение"))`
 
 Примените файл секрета:
 
 ```shell
-$ kubectl apply -f secrets.yaml
+$ kubectl apply -f minikube/secrets.yaml
+```
+
+Отредактируйте файл configmap.yaml заменив в нем ALLOWED_HOSTS на необходимый Вам
+
+Применяем файл configmap:
+```shell
+kubectl apply -f minikube/configmap.yaml
+```
+Далее:
+
+```shell
+kubectl apply -f minikube/deployment.yaml
+```
+```shell
+kubectl apply -f minikube/service.yaml
+```
+
+Запускаем службу очистки сессий:
+```shell
+kubectl apply -f minikube/django-clearsessions.yaml
+```
+
+Запускаем файл ingress.yaml(после его запуска сайт будет доступен по адресу star-burger.test):
+```shell
+kubectl apply -f minikube/ingress.yaml
+```
+
+Также при необходимости запускаем службу миграции:
+```shell
+kubectl apply -f minikube/django-migrate.yaml
 ```
