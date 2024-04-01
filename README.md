@@ -99,7 +99,7 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 4 Установите PostgreSQL с помощью команды:
 
 ```shell
-helm install postgres bitnami/postgresql -f minikube/db-value.yaml
+helm install postgres bitnami/postgresql --values .\minikube\db-value.yaml
 ```
 
 
