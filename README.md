@@ -85,6 +85,16 @@ $ docker compose build web
 $ minikube start
 ```
 
+Отредактируйте файл secrets.yaml
+Замените данные
+соответствующими значениями, закодированными в формате base64.
+Вы можете закодировать значения с помощью команды echo `-n 'ваше_значение' | base64` или `[Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("Ваше значение"))`
+
+Примените файл секрета:
+
+```shell
+$ kubectl apply -f minikube/secrets.yaml
+```
 Создайте и настройте базу данных используя [Helm](https://helm.sh/)
 
 1 Скачайте его с [официального сайта](https://helm.sh/)
@@ -94,23 +104,12 @@ $ minikube start
 ```shell
 helm repo add bitnami https://charts.bitnami.com/bitnami
 ```
-3 Отредактируйте файл db-value.yaml под себя 
 
-4 Установите PostgreSQL с помощью команды:
-
-```shell
-helm install postgres bitnami/postgresql --values .\minikube\db-value.yaml
-```
-
-
-Отредактируйте файл secrets.yaml
-Замените <base64_encoded_secret_key> и <base64_encoded_database_url> соответствующими значениями, закодированными в формате base64.
-Вы можете закодировать значения с помощью команды echo `-n 'ваше_значение' | base64` или `[Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("Ваше значение"))`
-
-Примените файл секрета:
+3 Установите PostgreSQL с помощью команды:
 
 ```shell
-$ kubectl apply -f minikube/secrets.yaml
+helm install postgres bitnami/postgresql --set auth.enablePostgresUser=true --set auth.postgresSecret.existingSecret=postgresql-secret
+
 ```
 
 Отредактируйте файл configmap.yaml заменив в нем ALLOWED_HOSTS на необходимый Вам
