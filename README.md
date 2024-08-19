@@ -141,3 +141,13 @@ kubectl apply -f minikube/ingress.yaml
 ```shell
 kubectl apply -f minikube/django-migrate.yaml
 ```
+
+
+## Как задеплоить код
+
+Отредактируйте файл service.yaml указав в нем необходимый Вам nodePort
+
+Далее:
+```shell
+kubectl apply -f yc_dev/service.yaml
+```
