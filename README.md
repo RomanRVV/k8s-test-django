@@ -151,3 +151,21 @@ kubectl apply -f minikube/django-migrate.yaml
 ```shell
 kubectl apply -f yc_dev/service.yaml
 ```
+
+
+## Как подготовить dev окружение
+
+Получите SSL-сертификат для доступа к базе данных.
+
+```shell
+mkdir -p ~/.postgresql && \
+wget "https://storage.yandexcloud.net/cloud-certs/CA.pem" \
+     --output-document ~/.postgresql/root.crt && \
+chmod 0600 ~/.postgresql/root.crt
+```
+
+Далее создайте secret файл с сертификатом
+
+```shell
+kubectl create secret generic postgres-cert --from-file=root.crt=/.postgresql/root.crt
+```
