@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: django-migrate
+  namespace: edu-goofy-allen
+spec:
+  ttlSecondsAfterFinished: 360
+  template:
+    spec:
+      containers:
+      - name: django-migrate
+        image: romanrvv/k8s-devman:5b2c0b5
+        imagePullPolicy: IfNotPresent
+        command: ["python", "manage.py",  "migrate", "--no-input"]
+        envFrom:
+          - configMapRef:
+              name: configmap
+          - secretRef:
+              name: django-secrets
+      restartPolicy: Never

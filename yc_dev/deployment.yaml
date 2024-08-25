@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django
+  namespace: edu-goofy-allen
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      containers:
+      - name: django
+        image: romanrvv/k8s-devman:5b2c0b5
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - configMapRef:
+              name: configmap
+          - secretRef:
+              name: django-secrets
+      volumes:
+        - name: postgres-cert-volume
+          secret:
+            secretName: postgres-cert
+            defaultMode: 384

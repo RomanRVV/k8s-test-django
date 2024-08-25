@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: django-clearsessions
+  namespace: edu-goofy-allen
+spec:
+  schedule: "0 0 1,15 * *"
+  startingDeadlineSeconds: 600
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 3600
+      template:
+        spec:
+          containers:
+          - name: romanrvv/k8s-devman:5b2c0b5
+            image: django_app:latest
+            imagePullPolicy: IfNotPresent
+            command: ["python", "manage.py", "clearsessions"]
+            envFrom:
+              - configMapRef:
+                  name: configmap
+              - secretRef:
+                  name: django-secrets
+          restartPolicy: OnFailure

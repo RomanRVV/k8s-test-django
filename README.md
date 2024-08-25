@@ -143,9 +143,22 @@ kubectl apply -f minikube/django-migrate.yaml
 ```
 
 
-## Как задеплоить код
+## Запуск сайта в Yandex CLoud
 
-### Загрузка образа на DockerHub
+Ссылка на работающую версию сайта https://edu-goofy-allen.sirius-k8s.dvmn.org/
+Ссылка на описание выделенных ресурсов облачной инфраструктуры https://sirius-env-registry.website.yandexcloud.net/edu-goofy-allen.html
+
+1.Следуйте инструкциям на официальном сайте Yandex Cloud, чтобы установить CLI для вашей операционной системы.
+
+2.После установки CLI выполните команду, чтобы авторизоваться и выбрать нужный проект.
+
+```shell
+yc init
+```
+
+### Как задеплоить код
+
+#### Загрузка образа на DockerHub
 
 1 Авторизуйтесь в DockerHub и создайте репозиторий.
 
@@ -161,20 +174,7 @@ docker build -t <image-name>:<tagname>
 docker push username/image-name:tagname
 ```
 
-
-
-
-
-
-Отредактируйте файл service.yaml указав в нем необходимый Вам nodePort
-
-Далее:
-```shell
-kubectl apply -f yc_dev/service.yaml
-```
-
-
-## Как подготовить dev окружение
+#### Как подготовить dev окружение
 
 Получите SSL-сертификат для доступа к базе данных.
 
@@ -189,4 +189,34 @@ chmod 0600 ~/.postgresql/root.crt
 
 ```shell
 kubectl create secret generic postgres-cert --from-file=root.crt=/.postgresql/root.crt
+```
+
+#### Запуск приложения Django
+
+1 Отредактируйте файлы configmap и secrets поставив свои переменные окружения, 
+после примените файлы:
+
+```shell
+kubectl -n <namespace> apply -f yc_dev/configmap.yaml
+```
+```shell
+kubectl -n <namespace> apply -f yc_dev/secrets.yaml
+```
+
+2 Разверните приложение:
+
+```shell
+kubectl -n <namespace> apply -f yc_dev/deployment.yaml
+```
+
+3 Отредактируйте файл service.yaml указав в нем необходимый Вам nodePort
+
+Далее:
+```shell
+kubectl -n <namespace> apply -f yc_dev/service.yaml
+```
+
+4 Примените миграции:
+```shell
+kubectl -n <namespace> apply -f yc_dev/django-migrate.yaml
 ```
