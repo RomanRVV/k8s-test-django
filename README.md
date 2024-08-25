@@ -145,6 +145,27 @@ kubectl apply -f minikube/django-migrate.yaml
 
 ## Как задеплоить код
 
+### Загрузка образа на DockerHub
+
+1 Авторизуйтесь в DockerHub и создайте репозиторий.
+
+2 Соберите docker образ
+
+```shell
+docker build -t <image-name>:<tagname> 
+```
+
+3 Запуште образ на DockerHub
+
+```shell
+docker push username/image-name:tagname
+```
+
+
+
+
+
+
 Отредактируйте файл service.yaml указав в нем необходимый Вам nodePort
 
 Далее:
